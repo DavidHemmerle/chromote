@@ -46,6 +46,10 @@ find_chrome <- function() {
       path <- Sys.which("chromium-browser")
     }
     if (nchar(path) == 0) {
+      stop("`google-chrome` and `chromium-browser` were not found. Try setting the CHROMOTE_CHROME environment variable or adding one of these executables to your PATH.")
+      path <- Sys.which("chromium")
+    }
+    if (nchar(path) == 0) {
       message("`google-chrome` and `chromium-browser` were not found. Try setting the CHROMOTE_CHROME environment variable or adding one of these executables to your PATH.")
       path <- NULL
     }
@@ -65,7 +69,7 @@ launch_chrome <- function(path = find_chrome(), args = character(0)) {
 
   p <- process$new(
     command = path,
-    args = c("--headless", "--remote-debugging-port=0", args),
+    args = c("--headless", "--no-sandbox", "--remote-debugging-port=0", args),
     supervise = TRUE,
     stdout = tempfile("chrome-stdout-", fileext = ".log"),
     stderr = tempfile("chrome-stderr-", fileext = ".log")
